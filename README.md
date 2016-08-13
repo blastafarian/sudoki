@@ -1,2 +1,2 @@
-# sudoki
-A sudoko solver written in Ruby
+# sudoku
+A sudoku solver written in Ruby

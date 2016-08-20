@@ -1,10 +1,13 @@
 #!/usr/bin/env ruby -w
 
+require 'set'
+
 class SudokuBoard
 
-  ROWS = 1..9
-  COLUMNS = 1..9
-  SQUARES = 1..9
+  ROWS = (1..9).to_set()
+  COLUMNS = (1..9).to_set()
+  SQUARES = (1..9).to_set()
+  VALID_VALUES = (1..9).to_set()
 
   def initialize
     @possibleValues = []
@@ -22,6 +25,7 @@ class SudokuBoard
   # Assigns the given value to the cell that is at the given row and column.
   # Returns nil.
   def assignValueToCell(row, col, value)
+    @possibleValues[row, col] = [value]
   end
 
   # Returns the value that has been assigned to a cell, or nil if no value
@@ -53,7 +57,9 @@ class SudokuBoard
 
   # Returns true if and only if the Sudoku board is solved.
   def solved?()
-    return false
+    ROWS.all? { |row| completeRow?(row) } &&
+      COLUMNS.all? { |column| completeColumn?(column) } &&
+      SQUARES.all? { |square| completeSquare?(square) }
   end
 
   # Returns true if and only if the Sudoki board is in a valid state.
@@ -114,6 +120,18 @@ class SudokuBoard
   end
 
   def validSquare?(square)
+    true
+  end
+
+  def completeRow?(row)
+    Set.new(COLUMNS.map { |column| assignedValueOfCell(row, column) }) == VALID_VALUES
+  end
+
+  def completeColumn?(column)
+    Set.new(ROWS.map { |row| assignedValueOfCell(row, column) }) == VALID_VALUES
+  end
+
+  def completeSquare?(square)
     true
   end
 end

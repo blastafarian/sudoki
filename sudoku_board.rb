@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby -w
 
+require './sudoku_cell.rb'
+
 require 'set'
 
 class SudokuBoard
@@ -10,39 +12,17 @@ class SudokuBoard
   VALID_VALUES = (1..9).to_set()
 
   def initialize
-    @possibleValues = []
-    @possibleValues[0] = [[1], [2], [3], [4], [5], [6], [7], [8], [9]]
-    @possibleValues[3] = [[4], [5], [6], [7], [8], [9], [1], [2], [3]]
-    @possibleValues[6] = [[7], [8], [9], [1], [2], [3], [4], [5], [6]]
-    @possibleValues[1] = [[2], [3], [4], [5], [6], [7], [8], [9], [1]]
-    @possibleValues[4] = [[5], [6], [7], [8], [9], [1], [2], [3], [4]]
-    @possibleValues[7] = [[8], [9], [1], [2], [3], [4], [5], [6], [7]]
-    @possibleValues[2] = [[3], [4], [5], [6], [7], [8], [9], [1], [2]]
-    @possibleValues[5] = [[6], [7], [8], [9], [1], [2], [3], [4], [5]]
-    @possibleValues[8] = [[9], [1], [2], [3], [4], [5], [6], [7], [8]]
+    @board = []
+    ROWS.each do |row|
+      @board[row] = []
+      COLUMNS.each do |column|
+        @board[row][column] = SudokuCell.new()
+      end
+    end
   end                      
 
-  # Assigns the given value to the cell that is at the given row and column.
-  # Returns nil.
-  def assignValueToCell(row, col, value)
-    @possibleValues[row, col] = [value]
-  end
-
-  # Returns the value that has been assigned to a cell, or nil if no value
-  # has been assigned.
-  def assignedValueOfCell(row, col)
-    poss = possibleValuesOfCell(row, col)
-    if poss != nil && poss.length() == 1
-      poss.first()
-    else
-      nil
-    end
-  end
-
-  # Returns a collection of the possible values that could be assigned to a
-  # cell, or nil if there are no possible values.
-  def possibleValuesOfCell(row, col)
-    @possibleValues[row-1][col-1]
+  def cell(row, column)
+    @board[row][column]
   end
 
   # Finds an unassigned cell with the minimum number of possible values.
@@ -75,7 +55,7 @@ class SudokuBoard
       str += "+---+---+---+\n" if row % 3 == 1
       COLUMNS.each do |column|
         str += "|" if column % 3 == 1
-        val = assignedValueOfCell(row, column)
+        val = cell(row, column).definiteValue()
         str += (val != nil)? val.to_s() : "."
       end
       str += "|\n"
@@ -99,7 +79,7 @@ class SudokuBoard
   def assignedValsOfRow(row)
     rowVals = []
     COLUMNS.map do |column|
-      cellVal = assignedValueOfCell(row, column)
+      cellVal = cell(row, column).definiteValue()
       if cellVal != nil
         rowVals.push(cellVal)
       end
@@ -124,11 +104,11 @@ class SudokuBoard
   end
 
   def completeRow?(row)
-    Set.new(COLUMNS.map { |column| assignedValueOfCell(row, column) }) == VALID_VALUES
+    COLUMNS.map { |column| cell(row, column).definiteValue() }.to_set() == VALID_VALUES
   end
 
   def completeColumn?(column)
-    Set.new(ROWS.map { |row| assignedValueOfCell(row, column) }) == VALID_VALUES
+    ROWS.map { |row| cell(row, column).definiteValue() }.to_set() == VALID_VALUES
   end
 
   def completeSquare?(square)

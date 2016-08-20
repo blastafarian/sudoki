@@ -2,10 +2,16 @@
 
 require './sudoku_board.rb'
 
-b = SudokuBoard.new()
+board = SudokuBoard.new()
+IO.readlines("./sample_board_01.txt").each_with_index do |line, index|
+  row = index + 1
+  for column in 1..9 do
+    board.cell(row, column).definiteValue = line[column-1]
+  end
+end
 
 puts "The board has these contents:"
-puts b
+puts board
 
-puts "Is the board solved? #{b.solved?}"
-puts "Is the board valid? #{b.valid?}"
+puts "Is the board valid? #{board.valid?}"
+puts "Is the board solved? #{board.solved?}"

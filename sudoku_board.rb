@@ -25,13 +25,10 @@ class SudokuBoard
     @board[row][column]
   end
 
-  # Finds an unassigned cell with the minimum number of possible values.
-  # Returns:
-  #   - (row, col, possibleValues) if such a cell exists, where row is a number
-  #     from 1 to 9, cell is a number from 1 to 9 and possibleValues is a set
-  #     of numbers from 1 to 9.
-  #   - nil otherwise.
-  def findCellWithMinPossibleValues
+  # From the set of cells that don't yet have a definite value, finds the cell
+  # with the least number of candidate values. If there are multiple such
+  # cells, returns any one of them. If there are no such cells, returns nil.
+  def findCellWithLeastCandidateValues()
     return nil
   end
 
@@ -42,7 +39,7 @@ class SudokuBoard
       SQUARES.all? { |square| completeSquare?(square) }
   end
 
-  # Returns true if and only if the Sudoki board is in a valid state.
+  # Returns true if and only if the Sudoku board is in a valid state.
   def valid?()
     ROWS.all? { |row| validRow?(row) } &&
       COLUMNS.all? { |column| validColumn?(column) } &&

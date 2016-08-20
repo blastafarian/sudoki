@@ -2,6 +2,10 @@
 
 class SudokuBoard
 
+  ROWS = 1..9
+  COLUMNS = 1..9
+  SQUARES = 1..9
+
   def initialize
     @possibleValues = []
     @possibleValues[0] = [[1], [2], [3], [4], [5], [6], [7], [8], [9]]
@@ -44,29 +48,34 @@ class SudokuBoard
   #     of numbers from 1 to 9.
   #   - nil otherwise.
   def findCellWithMinPossibleValues
-    nil
+    return nil
   end
 
   # Returns true if and only if the Sudoku board is solved.
   def solved?()
-    false
+    return false
   end
 
   # Returns true if and only if the Sudoki board is in a valid state.
   def valid?()
-    allRowsAreValid?() && allColsAreValid?() && allSquaresAreValid?()
+    ROWS.all? { |row| validRow?(row) } &&
+      COLUMNS.all? { |column| validColumn?(column) } &&
+      SQUARES.all? { |square| validSquare?(square) }
   end
 
   def to_s()
     str = ""
-    for row in 1..9 do
-      for col in 1..9 do
-        val = assignedValueOfCell(row, col)
-        str += (val != nil) ? val.to_s() : "."
+    ROWS.each do |row|
+      str += "+---+---+---+\n" if row % 3 == 1
+      COLUMNS.each do |column|
+        str += "|" if column % 3 == 1
+        val = assignedValueOfCell(row, column)
+        str += (val != nil)? val.to_s() : "."
       end
-      str += "\n"
+      str += "|\n"
     end
-    str
+    str += "+---+---+---+"
+    return str
   end
 
   ####################################
@@ -75,20 +84,16 @@ class SudokuBoard
 
   private
 
-  def allRowsAreValid?()
-    for row in 1..9 do
-      rowVals = assignedValsOfRow(row)
-      if hasDuplicates?(rowVals) || !(rowVals.each { |v| isValidCellValue?(v) })
-        false
-      end
-    end
-    true
+  def validRow?(row)
+    rowVals = assignedValsOfRow(row)
+    return !hasDuplicates?(rowVals) &&
+      rowVals.all? { |v| isValidCellValue?(v) }
   end
 
   def assignedValsOfRow(row)
     rowVals = []
-    for col in 1..9 do
-      cellVal = assignedValueOfCell(row, col)
+    COLUMNS.map do |column|
+      cellVal = assignedValueOfCell(row, column)
       if cellVal != nil
         rowVals.push(cellVal)
       end
@@ -104,11 +109,11 @@ class SudokuBoard
     val >= 1 && val <= 9
   end
 
-  def allColsAreValid?()
-    false
+  def validColumn?(column)
+    true
   end
 
-  def allSquaresAreValid?()
-    false
+  def validSquare?(square)
+    true
   end
 end

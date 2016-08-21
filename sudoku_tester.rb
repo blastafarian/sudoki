@@ -2,16 +2,41 @@
 
 require './sudoku_board.rb'
 
+def usage
+  puts "sudoku_tester.rb INPUT_FILE"
+end
+
+if ARGV.size() != 1
+  usage()
+  exit(1)
+end
+
+input_file = ARGV[0]
+
 board = SudokuBoard.new()
-IO.readlines("./sample_board_01.txt").each_with_index do |line, index|
+IO.readlines(input_file).each_with_index do |line, index|
   row = index + 1
   for column in 1..9 do
-    board.cell(row, column).definiteValue = line[column-1]
+    character = line[column - 1]
+    if character == "."
+      next
+    end
+
+    begin
+      number = character.to_i()
+    rescue
+      syserr.puts("Input file contains invalid character '#{character}'")
+      exit 1
+    end
+
+    if number.to_i() >= 1 && number.to_i() <= 9
+      board.getCell(row, column).definiteValue = number
+    else
+      syserr.puts("Input file contains invalid number '#{number}'")
+    end
   end
 end
 
-puts "The board has these contents:"
 puts board
-
-puts "Is the board valid? #{board.valid?}"
-puts "Is the board solved? #{board.solved?}"
+puts "Valid: #{board.valid?}"
+puts "Solved: #{board.solved?}"

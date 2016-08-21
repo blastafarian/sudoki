@@ -11,8 +11,12 @@ class SudokuCell
     @candidateValues = VALID_CELL_VALUES
   end
 
+  def hasDefiniteValue?()
+    return @candidateValues != nil && @candidateValues.size() == 1
+  end
+
   def definiteValue()
-    if @candidateValues != nil && @candidateValues.size() == 1
+    if hasDefiniteValue?()
       return @candidateValues.to_a().first()
     else
       return nil

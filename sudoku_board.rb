@@ -9,7 +9,7 @@ class SudokuBoard
   ROWS = (1..9).to_set()
   COLUMNS = (1..9).to_set()
   SQUARES = (1..9).to_set()
-  VALID_VALUES = (1..9).to_set()
+  VALID_CELL_VALUES = (1..9).to_set()
 
   def initialize
     @board = []
@@ -21,7 +21,7 @@ class SudokuBoard
     end
   end                      
 
-  def cell(row, column)
+  def getCell(row, column)
     @board[row][column]
   end
 
@@ -52,7 +52,7 @@ class SudokuBoard
       str += "+---+---+---+\n" if row % 3 == 1
       COLUMNS.each do |column|
         str += "|" if column % 3 == 1
-        val = cell(row, column).definiteValue()
+        val = getCell(row, column).definiteValue()
         str += (val != nil)? val.to_s() : "."
       end
       str += "|\n"
@@ -67,48 +67,70 @@ class SudokuBoard
 
   private
 
-  def validRow?(row)
-    rowVals = assignedValsOfRow(row)
-    return !hasDuplicates?(rowVals) &&
-      rowVals.all? { |v| isValidCellValue?(v) }
-  end
-
-  def assignedValsOfRow(row)
-    rowVals = []
-    COLUMNS.map do |column|
-      cellVal = cell(row, column).definiteValue()
-      if cellVal != nil
-        rowVals.push(cellVal)
-      end
-    end
-    return rowVals
-  end
-
-  def hasDuplicates?(array)
-    array != nil && array.uniq().length() < array.length()
-  end
-
-  def isValidCellValue?(val)
-    val >= 1 && val <= 9
-  end
-
-  def validColumn?(column)
-    true
-  end
-
-  def validSquare?(square)
-    true
-  end
-
   def completeRow?(row)
-    COLUMNS.map { |column| cell(row, column).definiteValue() }.to_set() == VALID_VALUES
+    valuesOfRow = COLUMNS.map { |column| getCell(row, column) }.
+      select { |cell| cell.hasDefiniteValue?() }.
+      map { |cell| cell.definiteValue() }
+
+    valuesOfRow.to_set() == VALID_CELL_VALUES
   end
 
   def completeColumn?(column)
-    ROWS.map { |row| cell(row, column).definiteValue() }.to_set() == VALID_VALUES
+    valuesOfColumn = ROWS.map { |row| getCell(row, column) }.
+      select { |cell| cell.hasDefiniteValue?() }.
+      map { |cell| cell.definiteValue() }
+
+    valuesOfColumn.to_set() == VALID_CELL_VALUES
   end
 
   def completeSquare?(square)
-    true
+    valuesOfSquare = getCellsOfSquare(square).
+      select { |cell| cell.hasDefiniteValue?() }.
+      map { |cell| cell.definiteValue() }
+
+    valuesOfSquare.to_set() == VALID_CELL_VALUES
+  end
+
+  # Returns a set of all the cells of the given square
+  def getCellsOfSquare(square)
+    retval = Set.new()
+    row_of_top_left_cell = (3 * ((square - 1) / 3)) + 1
+    column_of_top_left_cell = (3 * ((square - 1) % 3)) + 1
+    for column_offset in 0..2 do
+      for row_offset in 0..2 do
+        row = row_of_top_left_cell + row_offset
+        column = column_of_top_left_cell + column_offset
+        retval.add(getCell(row, column))
+      end
+    end
+    retval
+  end
+
+  def validRow?(row)
+    valuesOfRow = COLUMNS.map { |column| getCell(row, column) }.
+      select { |cell| cell.hasDefiniteValue?() }.
+      map { |cell| cell.definiteValue() }
+
+    (! arrayHasDuplicates?(valuesOfRow)) && valuesOfRow.to_set().subset?(VALID_CELL_VALUES)
+  end
+
+  def validColumn?(column)
+    valuesOfColumn = ROWS.map { |row| getCell(row, column) }.
+      select { |cell| cell.hasDefiniteValue?() }.
+      map { |cell| cell.definiteValue() }
+
+    (! arrayHasDuplicates?(valuesOfColumn)) && valuesOfColumn.to_set().subset?(VALID_CELL_VALUES)
+  end
+
+  def validSquare?(square)
+    valuesOfSquare = getCellsOfSquare(square).
+      select { |cell| cell.hasDefiniteValue?() }.
+      map { |cell| cell.definiteValue() }
+
+    (! arrayHasDuplicates?(valuesOfSquare)) && valuesOfSquare.to_set().subset?(VALID_CELL_VALUES)
+  end
+
+  def arrayHasDuplicates?(array)
+    array != nil && array.uniq().length() < array.length()
   end
 end

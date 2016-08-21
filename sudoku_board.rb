@@ -22,7 +22,13 @@ class SudokuBoard
   end                      
 
   def getCell(row, column)
-    @board[row][column]
+    if ! ROWS.include?(row)
+      raise "Invalid row number: #{row}"
+    elsif ! COLUMNS.include?(column)
+      raise "Invalid column number: #{column}"
+    else
+      @board[row][column]
+    end
   end
 
   # From the set of cells that don't yet have a definite value, finds the cell

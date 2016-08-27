@@ -31,11 +31,24 @@ class SudokuBoard
     end
   end
 
-  # From the set of cells that don't yet have a definite value, finds the cell
-  # with the least number of candidate values. If there are multiple such
-  # cells, returns any one of them. If there are no such cells, returns nil.
+  # From the set of cells that have more than one candidate values, returns
+  # the details (row number, column number and SudokuCell object) of the cell
+  # that has the minimum number of candidate values. If there are multiple such
+  # cells, returns the details of any one of them. If there are no such cells,
+  # returns nil, nil and nil.
   def findCellWithLeastCandidateValues()
-    return nil
+    minRow, minColumn, minCellObject = nil, nil, nil
+    ROWS.each do |row|
+      COLUMNS.each do |column|
+        if @board[row][column].candidateValues().size() > 1
+	  if (minCellObject == nil) ||
+	     (@board[row][column].candidateValues().size() < minCellObject.candidateValues().size())
+	    minRow, minColumn, minCellObject = row, column, @board[row][column]
+	  end
+	end
+      end
+    end
+    return minRow, minColumn, minCellObject
   end
 
   # Returns true if and only if the Sudoku board is solved.
@@ -63,7 +76,11 @@ class SudokuBoard
       end
       str += "|\n"
     end
-    str += "+---+---+---+"
+    str += "+---+---+---+\n"
+    str += "Valid: #{valid?}\n"
+    str += "Solved: #{solved?}\n"
+    minRow, minColumn, minCellObject = findCellWithLeastCandidateValues()
+    str += "The cell with the minimum number of candidate values is at row #{minRow} and column #{minColumn}. That cell has candidate values #{minCellObject.candidateValues().size()} values: #{minCellObject.candidateValues().to_a()}"
     return str
   end
 

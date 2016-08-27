@@ -38,5 +38,3 @@ IO.readlines(input_file).each_with_index do |line, index|
 end
 
 puts board
-puts "Valid: #{board.valid?}"
-puts "Solved: #{board.solved?}"

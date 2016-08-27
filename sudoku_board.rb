@@ -21,6 +21,28 @@ class SudokuBoard
     end
   end                      
 
+  def clone
+    newBoard = SudokuBoard.new()
+    ROWS.each do |row|
+      COLUMNS.each do |column|
+        cell = newBoard.getCell(row, column)
+	cell.candidateValues = @board[row][column].candidateValues
+      end
+    end
+    return newBoard
+  end
+
+  def updateAfterCellGotDefiniteValue(row, column)
+    defVal = getCell(row, column).definiteValue()
+    ROWS.each do |r|
+      COLUMNS.each do |c|
+        if ! (r == row and c == column)
+	  getCell(r, c).candidateValues().delete(defVal)
+	end
+      end
+    end
+  end
+
   def getCell(row, column)
     if ! ROWS.include?(row)
       raise "Invalid row number: #{row}"
@@ -80,7 +102,7 @@ class SudokuBoard
     str += "Valid: #{valid?}\n"
     str += "Solved: #{solved?}\n"
     minRow, minColumn, minCellObject = findCellWithLeastCandidateValues()
-    str += "The cell with the minimum number of candidate values is at row #{minRow} and column #{minColumn}. That cell has candidate values #{minCellObject.candidateValues().size()} values: #{minCellObject.candidateValues().to_a()}"
+    str += "The cell with the minimum number of candidate values is at row #{minRow} and column #{minColumn}. That cell has #{minCellObject.candidateValues().size()} candidate values: #{minCellObject.candidateValues().to_a()}"
     return str
   end
 

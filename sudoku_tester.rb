@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby -w
 
 require './sudoku_board.rb'
+require './sudoku_solver.rb'
 
 def usage
   puts "sudoku_tester.rb INPUT_FILE"
@@ -38,3 +39,5 @@ IO.readlines(input_file).each_with_index do |line, index|
 end
 
 puts board
+solvedBoard = SudokuSolver.new().solve(board)
+puts solvedBoard

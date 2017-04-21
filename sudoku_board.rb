@@ -25,8 +25,7 @@ class SudokuBoard
     newBoard = SudokuBoard.new()
     ROWS.each do |row|
       COLUMNS.each do |column|
-        cell = newBoard.getCell(row, column)
-	cell.candidateValues = @board[row][column].candidateValues
+        newBoard.setCell(row, column, getCell(row, column).clone())
       end
     end
     return newBoard
@@ -37,10 +36,14 @@ class SudokuBoard
     ROWS.each do |r|
       COLUMNS.each do |c|
         if ! (r == row and c == column)
-	  getCell(r, c).candidateValues().delete(defVal)
-	end
+          getCell(r, c).candidateValues().delete(defVal)
+        end
       end
     end
+  end
+
+  def setCell(row, column, cell)
+    @board[row][column] = cell
   end
 
   def getCell(row, column)
@@ -63,11 +66,11 @@ class SudokuBoard
     ROWS.each do |row|
       COLUMNS.each do |column|
         if @board[row][column].candidateValues().size() > 1
-	  if (minCellObject == nil) ||
-	     (@board[row][column].candidateValues().size() < minCellObject.candidateValues().size())
-	    minRow, minColumn, minCellObject = row, column, @board[row][column]
-	  end
-	end
+          if (minCellObject == nil) ||
+             (@board[row][column].candidateValues().size() < minCellObject.candidateValues().size())
+            minRow, minColumn, minCellObject = row, column, @board[row][column]
+          end
+        end
       end
     end
     return minRow, minColumn, minCellObject

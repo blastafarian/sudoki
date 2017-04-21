@@ -7,6 +7,15 @@ class SudokuCell
 
   attr_accessor :candidateValues
 
+  def clone
+    newCell = SudokuCell.new()
+    newCell.candidateValues = Set.new()
+    @candidateValues.each() do |c|
+      newCell.candidateValues.add(c)
+    end
+    return newCell
+  end
+
   def initialize(value = nil)
     @candidateValues = VALID_CELL_VALUES
   end

@@ -11,7 +11,7 @@ class SudokuSolver
       return board.clone()
     else
       minRow, minColumn, minCell = board.findCellWithLeastCandidateValues()
-      if minCell == nil || minCell.candidateValues.size() < 2
+      if minCell == nil || minCell.candidateValues.size() < 1
         return nil
       else
         minCell.candidateValues.each do |candidate|

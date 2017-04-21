@@ -102,7 +102,9 @@ class SudokuBoard
     str += "Valid: #{valid?}\n"
     str += "Solved: #{solved?}\n"
     minRow, minColumn, minCellObject = findCellWithLeastCandidateValues()
-    str += "The cell with the minimum number of candidate values is at row #{minRow} and column #{minColumn}. That cell has #{minCellObject.candidateValues().size()} candidate values: #{minCellObject.candidateValues().to_a()}"
+    if minCellObject != nil
+      str += "The cell with the minimum number of candidate values is at row #{minRow} and column #{minColumn}. That cell has #{minCellObject.candidateValues().size()} candidate values: #{minCellObject.candidateValues().to_a()}"
+    end
     return str
   end
 

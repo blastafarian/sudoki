@@ -39,5 +39,9 @@ IO.readlines(input_file).each_with_index do |line, index|
 end
 
 puts board
-solvedBoard = SudokuSolver.new().solve(board)
-puts solvedBoard
+
+if !board.solved?()
+  puts "Solving board ..."
+  solvedBoard = SudokuSolver.new().solve(board)
+  puts solvedBoard
+end

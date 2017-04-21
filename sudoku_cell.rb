@@ -17,7 +17,7 @@ class SudokuCell
   end
 
   def initialize(value = nil)
-    @candidateValues = VALID_CELL_VALUES
+    @candidateValues = VALID_CELL_VALUES.clone()
   end
 
   def hasDefiniteValue?()
@@ -33,8 +33,8 @@ class SudokuCell
   end
 
   def definiteValue=(value)
-    if VALID_CELL_VALUES.include?(value.to_i())
-      @candidateValues = Set.new().add(value.to_i())
+    if VALID_CELL_VALUES.include?(value)
+      @candidateValues = Set.new().add(value)
     else
       raise "Attempted to assign invalid value #{value} to a cell"
     end

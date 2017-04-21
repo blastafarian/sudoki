@@ -31,15 +31,30 @@ class SudokuBoard
     return newBoard
   end
 
-  def updateAfterCellGotDefiniteValue(row, column)
-    defVal = getCell(row, column).definiteValue()
-    ROWS.each do |r|
-      COLUMNS.each do |c|
-        if ! (r == row and c == column)
-          getCell(r, c).candidateValues().delete(defVal)
-        end
+  def setCellDefiniteValue(row, column, definiteValue)
+    getCell(row, column).definiteValue = definiteValue
+
+    # Update candidates in row
+    COLUMNS.each do |c|
+      if c != column
+        getCell(row, c).candidateValues().delete(definiteValue)
       end
     end
+
+    # Update candidates in column
+    ROWS.each do |r|
+      if r != row
+        getCell(r, column).candidateValues().delete(definiteValue)
+      end
+    end
+
+    # TODO Update candidates in square
+    #squareNumber = getSquareNumber(row, column)
+    #getCoordsOfSquare(squareNumber).each do |r, c|
+    #  if ! (r == row and c == column)
+    #    getCell(r, c).candidateValues().delete(defVal)
+    #  end
+    #end
   end
 
   def setCell(row, column, cell)

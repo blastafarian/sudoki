@@ -30,7 +30,7 @@ IO.readlines(input_file).each_with_index do |line, index|
       exit 1
     end
 
-    if number.to_i() >= 1 && number.to_i() <= 9
+    if number >= 1 && number <= 9
       board.getCell(row, column).definiteValue = number
     else
       syserr.puts("Input file contains invalid number '#{number}'")

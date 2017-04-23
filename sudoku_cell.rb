@@ -23,7 +23,7 @@ class SudokuCell
   def placedValue=(placedValue)
     if @candidateValues.include?(placedValue)
       @placedValue = placedValue
-      @candidateValues.select{ |c| c == placedValue }
+      @candidateValues = Set.new().add(placedValue)
     else
       raise "Cannot place value #{placeValue} in cell R#{@row}C#{@column} because the the value is not one of the candidates: #{@candidateValues.to_a()}" 
     end

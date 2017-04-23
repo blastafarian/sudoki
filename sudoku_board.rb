@@ -48,8 +48,6 @@ class SudokuBoard
       end
     end
 
-    # TODO Update candidates in square
-    #squareNumber = getSquareNumber(row, column)
     getCellsOfSquare(getCell(row, column).square).each do |cell|
       if ! (cell.row == row and cell.column == column)
         cell.candidateValues().delete(placedValue)
@@ -119,10 +117,6 @@ class SudokuBoard
     str += "+---+---+---+\n"
     str += "Valid: #{valid?}\n"
     str += "Solved: #{solved?}\n"
-    minRow, minColumn, minCellObject = findCellWithLeastCandidateValues()
-    if minCellObject != nil
-      str += "The cell with the minimum number of candidate values is at row #{minRow} and column #{minColumn}. That cell has #{minCellObject.candidateValues().size()} candidate values: #{minCellObject.candidateValues().to_a()}"
-    end
     return str
   end
 

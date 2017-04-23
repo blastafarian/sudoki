@@ -5,38 +5,28 @@ require 'set'
 class SudokuCell
   VALID_CELL_VALUES = (1..9).to_set()
 
+  attr_accessor :row
+  attr_accessor :column
   attr_accessor :candidateValues
+  attr_accessor :placedValue
 
-  def clone
-    newCell = SudokuCell.new()
-    newCell.candidateValues = Set.new()
-    @candidateValues.each() do |c|
-      newCell.candidateValues.add(c)
-    end
-    return newCell
-  end
-
-  def initialize(value = nil)
+  def initialize(row, column)
+    @row = row
+    @column = column
     @candidateValues = VALID_CELL_VALUES.clone()
   end
 
-  def hasDefiniteValue?()
-    return @candidateValues != nil && @candidateValues.size() == 1
+  def square()
+    ((row - 1) / 3) * 3 + ((column - 1) / 3) + 1
   end
 
-  def definiteValue()
-    if hasDefiniteValue?()
-      return @candidateValues.to_a().first()
+  def placedValue=(placedValue)
+    if @candidateValues.include?(placedValue)
+      @placedValue = placedValue
+      @candidateValues.select{ |c| c == placedValue }
     else
-      return nil
+      raise "Cannot place value #{placeValue} in cell R#{@row}C#{@column} because the the value is not one of the candidates: #{@candidateValues.to_a()}" 
     end
   end
 
-  def definiteValue=(value)
-    if VALID_CELL_VALUES.include?(value)
-      @candidateValues = Set.new().add(value)
-    else
-      raise "Attempted to assign invalid value #{value} to a cell"
-    end
-  end
 end

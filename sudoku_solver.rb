@@ -19,9 +19,8 @@ class SudokuSolver
         minCell.candidateValues.each do |candidate|
           puts "Guessing that row #{minRow} and column #{minColumn} has value #{candidate}"
           guessBoard = board.clone()
-          guessBoard.getCell(minRow, minColumn).definiteValue = candidate
+          guessBoard.getCell(minRow, minColumn).placedValue = candidate
           puts(guessBoard)
-          guessBoard.updateAfterCellGotDefiniteValue(minRow, minColumn)
           solution = solve(guessBoard)
           if solution != nil
             puts "Guess that row #{minRow} and column #{minColumn} has value #{candidate} failed"

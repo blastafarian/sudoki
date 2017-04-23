@@ -16,7 +16,7 @@ class SudokuBoard
     ROWS.each do |row|
       @board[row] = []
       COLUMNS.each do |column|
-        @board[row][column] = SudokuCell.new()
+        @board[row][column] = SudokuCell.new(row, column)
       end
     end
   end                      
@@ -31,30 +31,30 @@ class SudokuBoard
     return newBoard
   end
 
-  def setCellDefiniteValue(row, column, definiteValue)
-    getCell(row, column).definiteValue = definiteValue
+  def setCellPlacedValue(row, column, placedValue)
+    getCell(row, column).placedValue = placedValue
 
     # Update candidates in row
     COLUMNS.each do |c|
       if c != column
-        getCell(row, c).candidateValues().delete(definiteValue)
+        getCell(row, c).candidateValues().delete(placedValue)
       end
     end
 
     # Update candidates in column
     ROWS.each do |r|
       if r != row
-        getCell(r, column).candidateValues().delete(definiteValue)
+        getCell(r, column).candidateValues().delete(placedValue)
       end
     end
 
     # TODO Update candidates in square
     #squareNumber = getSquareNumber(row, column)
-    #getCoordsOfSquare(squareNumber).each do |r, c|
-    #  if ! (r == row and c == column)
-    #    getCell(r, c).candidateValues().delete(defVal)
-    #  end
-    #end
+    getCellsOfSquare(getCell(row, column).square).each do |cell|
+      if ! (cell.row == row and cell.column == column)
+        cell.candidateValues().delete(placedValue)
+      end
+    end
   end
 
   def setCell(row, column, cell)
@@ -111,7 +111,7 @@ class SudokuBoard
       str += "+---+---+---+\n" if row % 3 == 1
       COLUMNS.each do |column|
         str += "|" if column % 3 == 1
-        val = getCell(row, column).definiteValue()
+        val = getCell(row, column).placedValue
         str += (val != nil)? val.to_s() : "."
       end
       str += "|\n"
@@ -134,24 +134,24 @@ class SudokuBoard
 
   def completeRow?(row)
     valuesOfRow = COLUMNS.map { |column| getCell(row, column) }.
-      select { |cell| cell.hasDefiniteValue?() }.
-      map { |cell| cell.definiteValue() }
+      select { |cell| cell.placedValue }.
+      map { |cell| cell.placedValue }
 
     valuesOfRow.to_set() == VALID_CELL_VALUES
   end
 
   def completeColumn?(column)
     valuesOfColumn = ROWS.map { |row| getCell(row, column) }.
-      select { |cell| cell.hasDefiniteValue?() }.
-      map { |cell| cell.definiteValue() }
+      select { |cell| cell.placedValue }.
+      map { |cell| cell.placedValue }
 
     valuesOfColumn.to_set() == VALID_CELL_VALUES
   end
 
   def completeSquare?(square)
     valuesOfSquare = getCellsOfSquare(square).
-      select { |cell| cell.hasDefiniteValue?() }.
-      map { |cell| cell.definiteValue() }
+      select { |cell| cell.placedValue }.
+      map { |cell| cell.placedValue }
 
     valuesOfSquare.to_set() == VALID_CELL_VALUES
   end
@@ -173,24 +173,24 @@ class SudokuBoard
 
   def validRow?(row)
     valuesOfRow = COLUMNS.map { |column| getCell(row, column) }.
-      select { |cell| cell.hasDefiniteValue?() }.
-      map { |cell| cell.definiteValue() }
+      select { |cell| cell.placedValue }.
+      map { |cell| cell.placedValue }
 
     (! arrayHasDuplicates?(valuesOfRow)) && valuesOfRow.to_set().subset?(VALID_CELL_VALUES)
   end
 
   def validColumn?(column)
     valuesOfColumn = ROWS.map { |row| getCell(row, column) }.
-      select { |cell| cell.hasDefiniteValue?() }.
-      map { |cell| cell.definiteValue() }
+      select { |cell| cell.placedValue }.
+      map { |cell| cell.placedValue }
 
     (! arrayHasDuplicates?(valuesOfColumn)) && valuesOfColumn.to_set().subset?(VALID_CELL_VALUES)
   end
 
   def validSquare?(square)
     valuesOfSquare = getCellsOfSquare(square).
-      select { |cell| cell.hasDefiniteValue?() }.
-      map { |cell| cell.definiteValue() }
+      select { |cell| cell.placedValue }.
+      map { |cell| cell.placedValue }
 
     (! arrayHasDuplicates?(valuesOfSquare)) && valuesOfSquare.to_set().subset?(VALID_CELL_VALUES)
   end

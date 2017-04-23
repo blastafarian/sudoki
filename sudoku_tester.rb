@@ -31,7 +31,7 @@ IO.readlines(input_file).each_with_index do |line, index|
     end
 
     if number >= 1 && number <= 9
-      board.setCellDefiniteValue(row, column, number)
+      board.setCellPlacedValue(row, column, number)
     else
       syserr.puts("Input file contains invalid number '#{number}'")
     end

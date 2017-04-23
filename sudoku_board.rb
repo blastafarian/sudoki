@@ -32,7 +32,7 @@ class SudokuBoard
   end
 
   def setCellPlacedValue(row, column, placedValue)
-    getCell(row, column).placedValue = placedValue
+    getCell(row, column).setPlacedValue(placedValue)
 
     # Update candidates in row
     COLUMNS.each do |c|
@@ -109,7 +109,7 @@ class SudokuBoard
       str += "+---+---+---+\n" if row % 3 == 1
       COLUMNS.each do |column|
         str += "|" if column % 3 == 1
-        val = getCell(row, column).placedValue
+        val = getCell(row, column).getPlacedValue()
         str += (val != nil)? val.to_s() : "."
       end
       str += "|\n"
@@ -117,6 +117,13 @@ class SudokuBoard
     str += "+---+---+---+\n"
     str += "Valid: #{valid?}\n"
     str += "Solved: #{solved?}\n"
+    str += "Candidates:\n"
+    ROWS.each do |row|
+      COLUMNS.each do |column|
+        cell = getCell(row, column)
+        str += "R#{row}C#{column}: #{cell.candidateValues.to_a()}\n"
+      end
+    end
     return str
   end
 
@@ -128,24 +135,24 @@ class SudokuBoard
 
   def completeRow?(row)
     valuesOfRow = COLUMNS.map { |column| getCell(row, column) }.
-      select { |cell| cell.placedValue }.
-      map { |cell| cell.placedValue }
+      select { |cell| cell.getPlacedValue() }.
+      map { |cell| cell.getPlacedValue() }
 
     valuesOfRow.to_set() == VALID_CELL_VALUES
   end
 
   def completeColumn?(column)
     valuesOfColumn = ROWS.map { |row| getCell(row, column) }.
-      select { |cell| cell.placedValue }.
-      map { |cell| cell.placedValue }
+      select { |cell| cell.getPlacedValue() }.
+      map { |cell| cell.getPlacedValue() }
 
     valuesOfColumn.to_set() == VALID_CELL_VALUES
   end
 
   def completeSquare?(square)
     valuesOfSquare = getCellsOfSquare(square).
-      select { |cell| cell.placedValue }.
-      map { |cell| cell.placedValue }
+      select { |cell| cell.getPlacedValue() }.
+      map { |cell| cell.getPlacedValue() }
 
     valuesOfSquare.to_set() == VALID_CELL_VALUES
   end
@@ -167,24 +174,24 @@ class SudokuBoard
 
   def validRow?(row)
     valuesOfRow = COLUMNS.map { |column| getCell(row, column) }.
-      select { |cell| cell.placedValue }.
-      map { |cell| cell.placedValue }
+      select { |cell| cell.getPlacedValue() }.
+      map { |cell| cell.getPlacedValue() }
 
     (! arrayHasDuplicates?(valuesOfRow)) && valuesOfRow.to_set().subset?(VALID_CELL_VALUES)
   end
 
   def validColumn?(column)
     valuesOfColumn = ROWS.map { |row| getCell(row, column) }.
-      select { |cell| cell.placedValue }.
-      map { |cell| cell.placedValue }
+      select { |cell| cell.getPlacedValue() }.
+      map { |cell| cell.getPlacedValue() }
 
     (! arrayHasDuplicates?(valuesOfColumn)) && valuesOfColumn.to_set().subset?(VALID_CELL_VALUES)
   end
 
   def validSquare?(square)
     valuesOfSquare = getCellsOfSquare(square).
-      select { |cell| cell.placedValue }.
-      map { |cell| cell.placedValue }
+      select { |cell| cell.getPlacedValue() }.
+      map { |cell| cell.getPlacedValue() }
 
     (! arrayHasDuplicates?(valuesOfSquare)) && valuesOfSquare.to_set().subset?(VALID_CELL_VALUES)
   end

@@ -8,19 +8,23 @@ class SudokuCell
   attr_accessor :row
   attr_accessor :column
   attr_accessor :candidateValues
-  attr_accessor :placedValue
 
   def initialize(row, column)
     @row = row
     @column = column
     @candidateValues = VALID_CELL_VALUES.clone()
+    @placedValue = nil
   end
 
   def square()
     ((row - 1) / 3) * 3 + ((column - 1) / 3) + 1
   end
 
-  def placedValue=(placedValue)
+  def getPlacedValue()
+    @placedValue
+  end
+
+  def setPlacedValue(placedValue)
     if @candidateValues.include?(placedValue)
       @placedValue = placedValue
       @candidateValues = Set.new().add(placedValue)

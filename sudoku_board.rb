@@ -70,23 +70,26 @@ class SudokuBoard
   end
 
   # From the set of cells that have more than one candidate values, returns
-  # the details (row number, column number and SudokuCell object) of the cell
-  # that has the minimum number of candidate values. If there are multiple such
-  # cells, returns the details of any one of them. If there are no such cells,
-  # returns nil, nil and nil.
+  # the details (row number, column number and array of candidate values) of
+  # he cell that has the minimum number of candidate values. If there are
+  # multiple such cells, returns the details of any one of them. If there are
+  # no such cells, returns nil, nil and nil.
   def findCellWithLeastCandidateValues()
-    minRow, minColumn, minCellObject = nil, nil, nil
+    minRow, minColumn, minCandidateValues = nil, nil, nil
     ROWS.each do |row|
       COLUMNS.each do |column|
-        if @board[row][column].candidateValues().size() > 1
-          if (minCellObject == nil) ||
-             (@board[row][column].candidateValues().size() < minCellObject.candidateValues().size())
-            minRow, minColumn, minCellObject = row, column, @board[row][column]
+        cell = getCell(row, column)
+        if getCell(row, column).candidateValues().size() > 1
+          if (minCandidateValues == nil ||
+             cell.candidateValues().size() < minCandidateValues.size())
+            minRow = row
+            minColumn = column
+            minCandidateValues = cell.candidateValues()
           end
         end
       end
     end
-    return minRow, minColumn, minCellObject
+    return minRow, minColumn, minCandidateValues.to_a()
   end
 
   # Returns true if and only if the Sudoku board is solved.

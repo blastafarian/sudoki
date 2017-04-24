@@ -11,24 +11,30 @@ class SudokuSolver
       puts "Solved board"
       return board
     else
-      minRow, minColumn, minCell = board.findCellWithLeastCandidateValues()
-      puts "Cell with row #{minRow} and column #{minColumn} has the least number of candidates. Candidates are: #{minCell.candidateValues().to_a()}"
-      if minCell == nil || minCell.candidateValues.size() < 1
-        puts "No solution"
+      minRow, minColumn, minCandidateValues = board.findCellWithLeastCandidateValues()
+      puts "R#{minRow}C#{minColumn} has the least number of candidates."
+      puts "That is, #{minCandidateValues.size()} candidates: #{minCandidateValues}"
+      if minCandidateValues.size() < 1
+        puts "No solution because there are no more candidates"
         return nil
+      elsif minCandidateValues.size() == 1
+        definiteValue = minCandidateValues[0]
+        puts "R#{minRow}C#{minColumn} has to be #{definiteValue}"
+        board.setCellPlacedValue(minRow, minColumn, definiteValue)
+        solve(board)
       else
-        minCell.candidateValues.each do |candidate|
-          puts "Guessing that row #{minRow} and column #{minColumn} has value #{candidate}"
+        minCandidateValues.each do |candidate|
+          puts "Guessing that R#{minRow}C#{minColumn} = #{candidate}"
           guessBoard = board.clone()
           guessBoard.setCellPlacedValue(minRow, minColumn, candidate)
-          puts(guessBoard)
           solution = solve(guessBoard)
           if solution != nil
+            puts "No solution for guess R#{minRow}C#{minColumn} = #{candidate}"
             return solution
           end
         end
         # If we got here, it means that the board is not solvable
-        puts "No solution"
+        puts "No solution because all guesses have been tried unsuccessfully"
         return nil
       end
     end

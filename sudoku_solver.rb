@@ -12,21 +12,21 @@ class SudokuSolver
       return board
     else
       minRow, minColumn, minCandidateValues = board.findCellWithLeastCandidateValues()
-      puts "R#{minRow}C#{minColumn} has the least number of candidates."
-      puts "That is, #{minCandidateValues.size()} candidates: #{minCandidateValues}"
       if minCandidateValues.size() < 1
         puts "No solution because there are no more candidates"
         return nil
       elsif minCandidateValues.size() == 1
         definiteValue = minCandidateValues[0]
         puts "R#{minRow}C#{minColumn} has to be #{definiteValue}"
-        board.setCellPlacedValue(minRow, minColumn, definiteValue)
+        board.placeValue(minRow, minColumn, definiteValue)
         solve(board)
       else
+        puts "R#{minRow}C#{minColumn} has the least number of candidates, " +
+          "that is, #{minCandidateValues}"
         minCandidateValues.each do |candidate|
           puts "Guessing that R#{minRow}C#{minColumn} = #{candidate}"
           guessBoard = board.clone()
-          guessBoard.setCellPlacedValue(minRow, minColumn, candidate)
+          guessBoard.placeValue(minRow, minColumn, candidate)
           solution = solve(guessBoard)
           if solution != nil
             puts "No solution for guess R#{minRow}C#{minColumn} = #{candidate}"

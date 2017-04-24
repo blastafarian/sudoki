@@ -31,17 +31,18 @@ IO.readlines(input_file).each_with_index do |line, index|
     end
 
     if number >= 1 && number <= 9
-      board.setCellPlacedValue(row, column, number)
+      board.placeValue(row, column, number)
     else
       syserr.puts("Input file contains invalid number '#{number}'")
     end
   end
 end
 
-puts board
-
-if !board.solved?()
+if board.solved?()
+  puts "Board is already solved."
+  puts board
+else
   puts "Solving board ..."
-  solvedBoard = SudokuSolver.new().solve(board)
-  puts solvedBoard
+  puts board
+  puts SudokuSolver.new().solve(board)
 end

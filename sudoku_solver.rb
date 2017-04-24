@@ -7,7 +7,10 @@ class SudokuSolver
   # Returns a new board object containing a solved board, or nil if no solved
   # board could be found.
   def solve(board)
-    if board.solved?()
+    if !board.valid?()
+      puts "Board is in an invalid state"
+      return nil
+    elsif board.solved?()
       puts "Solved board"
       return board
     else
@@ -38,7 +41,8 @@ class SudokuSolver
           end
         end
         # If we got here, it means that the board is not solvable
-        puts "No solution because all guesses have been tried unsuccessfully"
+        puts "No solution because all candidates of R#{minRow}C#{minColumn} " +
+          "i.e., #{minCandidateValues}, have been tried unsuccessfully"
         return nil
       end
     end

@@ -38,7 +38,7 @@ class SudokuBoard
     COLUMNS.each do |c|
       if c != column
         getCell(row, c).candidateValues().delete(placedValue)
-       end
+      end
      end
  
     # Update candidates in column

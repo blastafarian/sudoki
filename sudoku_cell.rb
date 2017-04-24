@@ -29,7 +29,9 @@ class SudokuCell
       @placedValue = placedValue
       @candidateValues = Set.new().add(placedValue)
     else
-      raise "Cannot place value #{placeValue} in cell R#{@row}C#{@column} because the the value is not one of the candidates: #{@candidateValues.to_a()}" 
+      raise "Cannot place value #{placedValue} in cell R#{@row}C#{@column} " +
+        "because the the value is not one of the candidates: " +
+        "#{@candidateValues.to_a()}"
     end
   end
 

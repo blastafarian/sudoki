@@ -26,14 +26,19 @@ IO.readlines(input_file).each_with_index do |line, index|
     begin
       number = character.to_i()
     rescue
-      syserr.puts("Input file contains invalid character '#{character}'")
+      $stderr.puts("Input file contains invalid character '#{character}'")
       exit 1
     end
 
     if number >= 1 && number <= 9
-      board.placeValue(row, column, number)
+      begin
+        board.placeValue(row, column, number)
+      rescue => ex
+        $stderr.puts("#{ex.message}")
+        exit 1
+      end
     else
-      syserr.puts("Input file contains invalid number '#{number}'")
+      $stderr.puts("Input file contains invalid number '#{number}'")
     end
   end
 end
